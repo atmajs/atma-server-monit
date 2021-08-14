@@ -10,7 +10,7 @@ async function process () {
 
     dts.bundle({
         name: 'everlog',
-        main: './ts-temp/index.d.ts',
+        main: './ts-temp/exports.d.ts',
         out: './typings/index.d.ts',
 
     });
