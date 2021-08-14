@@ -17,7 +17,7 @@
     },
     "typedocOptions": {
         "name": "",
-        "entryPoints": ["src/Everlog.ts"],
+        "entryPoints": ["src/Everlog.ts", "src/fs/LoggerFile.ts"],
         "out": "docs"
     }
 }
