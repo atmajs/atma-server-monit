@@ -9,12 +9,12 @@ async function process () {
     }
 
     dts.bundle({
-        name: 'atma-server-monit',
+        name: 'everlog',
         main: './ts-temp/index.d.ts',
         out: './typings/index.d.ts',
-        
+
     });
-    
+
     File.copyTo('./ts-temp/typings/index.d.ts', './lib/index.d.ts');
 }
 
@@ -52,7 +52,7 @@ namespace Preprocess {
         if (out === source) {
             return { source: out, modified: false }
         }
-        
+
         // remove
         out = out.replace(importsRgx, '$2');
         return { source: out, modified: true }
@@ -63,10 +63,10 @@ namespace Preprocess {
 
         let result = null;
         let modified = false;
-        
+
         result = normalizeGlobalImports(source);
         modified = result.modified || modified;
-        
+
         result = normalizeInterfaceImports(result.source);
         modified = result.modified || modified;
 

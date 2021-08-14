@@ -5,4 +5,9 @@ test/
 ts-temp/
 tools/
 logs/
+examples/
 www/node_modules
+docs/
+assets/
+tsconfig-*
+

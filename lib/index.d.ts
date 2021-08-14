@@ -4,10 +4,10 @@
 //   ../@slack/web-api
 //   ../atma-io
 
-declare module 'atma-server-monit' {
+declare module 'everlog' {
     import { Application } from 'atma-server';
-    import { IMonitOptions } from 'atma-server-monit/MonitWorker';
-    import { ILoggerOpts, LoggerFile, ILogger } from 'atma-server-monit/fs/LoggerFile';
+    import { IMonitOptions } from 'everlog/MonitWorker';
+    import { ILoggerOpts, LoggerFile, ILogger } from 'everlog/fs/LoggerFile';
     export namespace Monit {
         function startLogger(opts: IMonitOptions): Promise<void>;
         function start(app: Application, opts: IMonitOptions): void;
@@ -19,10 +19,10 @@ declare module 'atma-server-monit' {
     }
 }
 
-declare module 'atma-server-monit/MonitWorker' {
-    import { SlackClient } from 'atma-server-monit/Slack';
-    import { LoggerFile, ILoggerOpts } from 'atma-server-monit/fs/LoggerFile';
-    import { ChannelReader } from 'atma-server-monit/reader/ChannelReader';
+declare module 'everlog/MonitWorker' {
+    import { SlackClient } from 'everlog/Slack';
+    import { LoggerFile, ILoggerOpts } from 'everlog/fs/LoggerFile';
+    import { ChannelReader } from 'everlog/reader/ChannelReader';
     type LifecycleEvent = any;
     type LifecycleEvents = any;
     export interface IMonitOptions {
@@ -61,8 +61,8 @@ declare module 'atma-server-monit/MonitWorker' {
     export {};
 }
 
-declare module 'atma-server-monit/fs/LoggerFile' {
-    import { ICsvColumn } from 'atma-server-monit/model/ICsvColumn';
+declare module 'everlog/fs/LoggerFile' {
+    import { ICsvColumn } from 'everlog/model/ICsvColumn';
     export interface ILoggerOpts {
         directory: string;
         fileCountMax?: number;
@@ -104,7 +104,7 @@ declare module 'atma-server-monit/fs/LoggerFile' {
     }
 }
 
-declare module 'atma-server-monit/Slack' {
+declare module 'everlog/Slack' {
     import { WebClient } from '@slack/web-api';
     export class SlackClient {
         access_token: string;
@@ -122,11 +122,11 @@ declare module 'atma-server-monit/Slack' {
     }
 }
 
-declare module 'atma-server-monit/reader/ChannelReader' {
-    import { FileReader } from 'atma-server-monit/reader/FileReader'; 
-     import { LoggerFile } from 'atma-server-monit/fs/LoggerFile';
-    import { ICsvColumn } from 'atma-server-monit/model/ICsvColumn';
-    import { GetChannelParams } from 'atma-server-monit/reader/LogsReader';
+declare module 'everlog/reader/ChannelReader' {
+    import { FileReader } from 'everlog/reader/FileReader'; 
+     import { LoggerFile } from 'everlog/fs/LoggerFile';
+    import { ICsvColumn } from 'everlog/model/ICsvColumn';
+    import { GetChannelParams } from 'everlog/reader/LogsReader';
     export interface IChannelLinesQuery {
             offset?: number;
             limit?: number;
@@ -155,7 +155,7 @@ declare module 'atma-server-monit/reader/ChannelReader' {
     }
 }
 
-declare module 'atma-server-monit/model/ICsvColumn' {
+declare module 'everlog/model/ICsvColumn' {
     export interface ICsvColumn {
         idx?: number;
         name: string;
@@ -167,11 +167,11 @@ declare module 'atma-server-monit/model/ICsvColumn' {
     }
 }
 
-declare module 'atma-server-monit/reader/FileReader' {
+declare module 'everlog/reader/FileReader' {
     import { File } from 'atma-io';
-    import { DayDate } from 'atma-server-monit/model/DayDate';
-    import { LoggerFile } from 'atma-server-monit/fs/LoggerFile';
-    import { ICsvColumn } from "atma-server-monit/model/ICsvColumn";
+    import { DayDate } from 'everlog/model/DayDate';
+    import { LoggerFile } from 'everlog/fs/LoggerFile';
+    import { ICsvColumn } from "everlog/model/ICsvColumn";
     type FileType = InstanceType<typeof File>;
     export interface IFileQuery {
         offset?: number;
@@ -211,11 +211,11 @@ declare module 'atma-server-monit/reader/FileReader' {
     export {};
 }
 
-declare module 'atma-server-monit/reader/LogsReader' {
-    import { ICsvColumn } from 'atma-server-monit/model/ICsvColumn'; 
-     import { MonitWorker } from 'atma-server-monit/MonitWorker';
-    import { ITableColumnFilter } from 'atma-server-monit/model/Table';
-    import { DayDate } from 'atma-server-monit/model/DayDate';
+declare module 'everlog/reader/LogsReader' {
+    import { ICsvColumn } from 'everlog/model/ICsvColumn'; 
+     import { MonitWorker } from 'everlog/MonitWorker';
+    import { ITableColumnFilter } from 'everlog/model/Table';
+    import { DayDate } from 'everlog/model/DayDate';
     export class LogsReader {
             monit: MonitWorker;
             constructor(monit: MonitWorker);
@@ -255,7 +255,7 @@ declare module 'atma-server-monit/reader/LogsReader' {
     }
 }
 
-declare module 'atma-server-monit/model/DayDate' {
+declare module 'everlog/model/DayDate' {
     export class DayDate implements IDay {
         year: number;
         date: number;
@@ -287,8 +287,8 @@ declare module 'atma-server-monit/model/DayDate' {
     }
 }
 
-declare module 'atma-server-monit/model/Table' {
-    import { ICsvColumn } from 'atma-server-monit/model/ICsvColumn';
+declare module 'everlog/model/Table' {
+    import { ICsvColumn } from 'everlog/model/ICsvColumn';
     export interface ITableQuery {
         sortByColumnIdx?: number;
         sortDir?: 'asc' | 'desc';
