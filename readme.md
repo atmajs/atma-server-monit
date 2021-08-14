@@ -1,12 +1,10 @@
 # Everlog
 
 <p align='center'>
-    <img src='assets/background.png'/>
+    <img src='assets/background.jpg'/>
 </p>
 
 -----
-
-
 
 <p align="center">
     <a href='https://travis-ci.com/atmajs/everlog' target='_blank'>
@@ -17,14 +15,40 @@
         </a>
 </p>
 
-> High-performance fs logging with **buffering**, **file retention**, **thread safe** and **csv-streams** for every day usage.
+> 📔 High-performance fs logging with **buffering**, **file retention**, **thread safety**, **CSV streams** and **log viewer** for every day usage.
 
-1. Simple Request and Error watcher - logs to fs and slack.
+#### CLI
+
+```
+$ npm i -g everlog
+
+# Help
+$ everlog
+
+# List all created channels
+$ everlog list
+
+# Get statistic for a channel: amount of lines, files, etc.
+$ everlog stats foo
+
+# Read N last lines from a channel. Supports params `offset` and `limit`
+$ everlog read foo
+
+# Start viewer web-app.
+$ everlog server --port=5772
+
+```
+
+#### [API](https://docs.atma.dev/everlog)
+
+
+
+1. Initialize the everlog
 
 ```ts
 import { Everlog } from 'everlog'
 
-Monit.start(app.lifecycle, {
+await Everlog.initialize({
     directory: `./logs/`,
     slack: {
         token: '',
@@ -36,20 +60,24 @@ Monit.start(app.lifecycle, {
     fileMessagesMax: 10 ** 7
     messageBufferMax: 50;
     columns: [] as ICsvColumn[];
-})
+});
 ```
 
-2. Custom Event Streams
+2. Create Log Streams
 
 ```ts
-const channel = Monit.createChannel('foo', {
+const channel = Everlog.createChannel('foo', {
     columns: [
         { name: 'Title', filterable: true },
         { name: 'MyVal', type: 'number', sortable: true, groupable: true },
         { name: 'Timestamp', type: 'date', sortable: true, groupable: true },
     ]
 });
-channel.write(`Lorem ipsum, 123, ${Date.now()}`);
+
+channel.writeRow([`Lorem ipsum`, 123, new Date()]);
+
+// On the application end flush data (in case there is smth in the buffer)
+Everlog.flush();
 ```
 
 ## Dev
@@ -64,8 +92,8 @@ channel.write(`Lorem ipsum, 123, ${Date.now()}`);
 SubApplication to view/sort/filter collected events
 
 * Development endpoints (_unbuild source_):
-    * web: `http://localhost:5777/atma/monit/index.dev.html`
-    * api, e.g: `http://localhost:5777/atma/monit/api/logs/channels`
+    * web: `http://localhost:5771/index.dev.html`
+    * api, e.g: `http://localhost:5771/api/logs/channels`
 
 
 ### Prepair
@@ -85,8 +113,10 @@ SubApplication to view/sort/filter collected events
 # starts demo server with Core and Viewer attached
 > npm run example
 
-# navigate to http://localhost:5777/atma/monit/index.dev.html
+# navigate to http://localhost:5771/atma/monit/index.dev.html
 ```
 
+🏁
+
 ----
-The MIT License
+©️ MIT License.

@@ -1,5 +1,6 @@
 import alot from 'alot';
-import { LifecycleEvent, LifecycleEvents } from 'atma-server/HttpApplication/LifecycleEvents';
+import { Directory } from 'atma-io';
+//import { LifecycleEvent, LifecycleEvents } from 'atma-server/HttpApplication/LifecycleEvents';
 import { class_Uri } from 'atma-utils';
 import { SlackClient } from './Slack';
 import { LoggerFile, ILoggerOpts } from './fs/LoggerFile';
@@ -7,7 +8,9 @@ import { Csv } from './utils/csv';
 import { Err } from './utils/err';
 import { dir_readAsync } from './fs/fs';
 import { ChannelReader } from './reader/ChannelReader';
-import { Directory } from 'atma-io';
+
+declare type LifecycleEvent = any;
+declare type LifecycleEvents = any;
 
 
 export interface IMonitOptions {

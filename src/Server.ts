@@ -1,12 +1,12 @@
+
 import { Config } from 'appcfg/Config';
-import { Application, middleware } from 'atma-server';
+
 import { class_Uri } from 'atma-utils';
-import { env } from 'atma-io';
 import { Everlog } from './Everlog';
 
-
+const { Application, middleware } = require('atma-server');
 const basicAuth = require('express-basic-auth');
-const base = new class_Uri(`file://${__dirname}/`).cdUp();
+const base = new class_Uri(`file://${__dirname}/`).cdUp().toString();
 
 export class Server {
 
@@ -18,7 +18,7 @@ export class Server {
     async run () {
         const app = await Application.create({
             base: base.toString(),
-            config: {
+            config: <any> {
                 SERVER: true,
                 static: class_Uri.combine(base, './www/'),
             },
@@ -49,7 +49,7 @@ export class Server {
         this.config.port = config.$get('port') as number ?? 5771;
     }
 
-    private init (app: Application) {
+    private init (app) {
         this.readConfig(app.config as any);
 
         const user = this.getUser();

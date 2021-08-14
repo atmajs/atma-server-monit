@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>everlog</title>
+	<meta name="description" content="Documentation for everlog">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">everlog</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>everlog</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#everlog" id="everlog" style="color: inherit; text-decoration: none;">
+					<h1>Everlog</h1>
+				</a>
+				<p align='center'>
+					<img src='assets/background.jpg'/>
+				</p>
+				<hr>
+				<p align="center">
+					<a href='https://travis-ci.com/atmajs/everlog' target='_blank'>
+						<img src='https://api.travis-ci.com/atmajs/everlog.png?branch=master' />
+					</a>
+					<a href='http://badge.fury.io/js/everlog' target='_blank'>
+						<img src='https://badge.fury.io/js/everlog.svg' />
+					</a>
+				</p>
+				<blockquote>
+					<p>📔 High-performance fs logging with <strong>buffering</strong>, <strong>file retention</strong>, <strong>thread safety</strong>, <strong>CSV streams</strong> and <strong>log viewer</strong> for every day usage.</p>
+				</blockquote>
+				<a href="#cli" id="cli" style="color: inherit; text-decoration: none;">
+					<h4>CLI</h4>
+				</a>
+				<pre><code><span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">i</span><span style="color: #000000"> -</span><span style="color: #001080">g</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span>
+
+<span style="color: #000000"># </span><span style="color: #001080">Help</span>
+<span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span>
+
+<span style="color: #000000"># </span><span style="color: #001080">List</span><span style="color: #000000"> </span><span style="color: #001080">all</span><span style="color: #000000"> </span><span style="color: #001080">created</span><span style="color: #000000"> </span><span style="color: #001080">channels</span>
+<span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span><span style="color: #000000"> </span><span style="color: #001080">list</span>
+
+<span style="color: #000000"># </span><span style="color: #001080">Get</span><span style="color: #000000"> </span><span style="color: #001080">statistic</span><span style="color: #000000"> </span><span style="color: #001080">for</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000"> channel: </span><span style="color: #001080">amount</span><span style="color: #000000"> </span><span style="color: #0000FF">of</span><span style="color: #000000"> </span><span style="color: #001080">lines</span><span style="color: #000000">, </span><span style="color: #001080">files</span><span style="color: #000000">, </span><span style="color: #001080">etc</span><span style="color: #000000">.</span>
+<span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span><span style="color: #000000"> </span><span style="color: #001080">stats</span><span style="color: #000000"> </span><span style="color: #001080">foo</span>
+
+<span style="color: #000000"># </span><span style="color: #001080">Read</span><span style="color: #000000"> </span><span style="color: #0070C1">N</span><span style="color: #000000"> </span><span style="color: #001080">last</span><span style="color: #000000"> </span><span style="color: #001080">lines</span><span style="color: #000000"> </span><span style="color: #001080">from</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000"> </span><span style="color: #001080">channel</span><span style="color: #000000">. </span><span style="color: #001080">Supports</span><span style="color: #000000"> </span><span style="color: #001080">params</span><span style="color: #000000"> </span><span style="color: #A31515">`offset`</span><span style="color: #000000"> </span><span style="color: #001080">and</span><span style="color: #000000"> </span><span style="color: #A31515">`limit`</span>
+<span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span><span style="color: #000000"> </span><span style="color: #001080">read</span><span style="color: #000000"> </span><span style="color: #001080">foo</span>
+
+<span style="color: #000000"># </span><span style="color: #001080">Start</span><span style="color: #000000"> </span><span style="color: #001080">viewer</span><span style="color: #000000"> </span><span style="color: #001080">web</span><span style="color: #000000">-</span><span style="color: #001080">app</span><span style="color: #000000">.</span>
+<span style="color: #001080">$</span><span style="color: #000000"> </span><span style="color: #001080">everlog</span><span style="color: #000000"> </span><span style="color: #001080">server</span><span style="color: #000000"> --</span><span style="color: #001080">port</span><span style="color: #000000">=</span><span style="color: #098658">5772</span>
+
+</code></pre>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h4>API</h4>
+				</a>
+				<ol>
+					<li>Initialize the everlog</li>
+				</ol>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Everlog</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;everlog&#039;</span>
+
+<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Everlog</span><span style="color: #000000">.</span><span style="color: #795E26">initialize</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">directory:</span><span style="color: #000000"> </span><span style="color: #A31515">`./logs/`</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">slack:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #001080">token:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">channelId:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;&#039;</span>
+<span style="color: #000000">    },</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">fileCountMax:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">fileBytesMax:</span><span style="color: #000000"> </span><span style="color: #098658">500</span><span style="color: #000000"> * </span><span style="color: #098658">1024</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">fileMessagesMax</span><span style="color: #000000">: </span><span style="color: #098658">10</span><span style="color: #000000"> ** </span><span style="color: #098658">7</span>
+<span style="color: #000000">    </span><span style="color: #001080">messageBufferMax</span><span style="color: #000000">: </span><span style="color: #098658">50</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">columns</span><span style="color: #000000">: [] </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">ICsvColumn</span><span style="color: #000000">[];</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<ol start="2">
+					<li>Create Log Streams</li>
+				</ol>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">channel</span><span style="color: #000000"> = </span><span style="color: #001080">Everlog</span><span style="color: #000000">.</span><span style="color: #795E26">createChannel</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;foo&#039;</span><span style="color: #000000">, {</span>
+<span style="color: #000000">    </span><span style="color: #001080">columns:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Title&#039;</span><span style="color: #000000">, </span><span style="color: #001080">filterable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
+<span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;MyVal&#039;</span><span style="color: #000000">, </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;number&#039;</span><span style="color: #000000">, </span><span style="color: #001080">sortable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #001080">groupable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
+<span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Timestamp&#039;</span><span style="color: #000000">, </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;date&#039;</span><span style="color: #000000">, </span><span style="color: #001080">sortable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #001080">groupable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
+<span style="color: #000000">    ]</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #001080">channel</span><span style="color: #000000">.</span><span style="color: #795E26">writeRow</span><span style="color: #000000">([</span><span style="color: #A31515">`Lorem ipsum`</span><span style="color: #000000">, </span><span style="color: #098658">123</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">()]);</span>
+
+<span style="color: #008000">// On the application end flush data (in case there is smth in the buffer)</span>
+<span style="color: #001080">Everlog</span><span style="color: #000000">.</span><span style="color: #795E26">flush</span><span style="color: #000000">();</span>
+</code></pre>
+				<a href="#dev" id="dev" style="color: inherit; text-decoration: none;">
+					<h2>Dev</h2>
+				</a>
+				<a href="#core-src" id="core-src" style="color: inherit; text-decoration: none;">
+					<h3>Core (<code>/src/</code>)</h3>
+				</a>
+				<ul>
+					<li>Collects events from a server or from custom streams, and proceeds with persistence or further propagation (<em>slack</em>)</li>
+					<li>Creates a subapp to view collected events</li>
+				</ul>
+				<a href="#viewer-www" id="viewer-www" style="color: inherit; text-decoration: none;">
+					<h3>Viewer (<code>/www/</code>)</h3>
+				</a>
+				<p>SubApplication to view/sort/filter collected events</p>
+				<ul>
+					<li>Development endpoints (<em>unbuild source</em>):<ul>
+							<li>web: <code>http://localhost:5771/index.dev.html</code></li>
+							<li>api, e.g: <code>http://localhost:5771/api/logs/channels</code></li>
+						</ul>
+					</li>
+				</ul>
+				<a href="#prepair" id="prepair" style="color: inherit; text-decoration: none;">
+					<h3>Prepair</h3>
+				</a>
+				<pre><code class="language-sh"><span style="color: #000000">&gt; npm i</span>
+<span style="color: #000000">&gt; </span><span style="color: #795E26">cd</span><span style="color: #000000"> www/</span>
+<span style="color: #000000">&gt; npm i</span>
+</code></pre>
+				<a href="#start-exampledev-project-for-the-viewer" id="start-exampledev-project-for-the-viewer" style="color: inherit; text-decoration: none;">
+					<h3>Start Example(<em>Dev Project for the viewer</em>)</h3>
+				</a>
+				<pre><code class="language-sh"><span style="color: #008000"># builds core to be available for example as lib</span>
+<span style="color: #000000">&gt; npm run watch</span>
+
+<span style="color: #008000"># starts demo server with Core and Viewer attached</span>
+<span style="color: #000000">&gt; npm run example</span>
+
+<span style="color: #008000"># navigate to http://localhost:5771/atma/monit/index.dev.html</span>
+</code></pre>
+				<p>🏁</p>
+				<hr>
+				<p>©️ MIT License.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/Everlog.html">Everlog</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

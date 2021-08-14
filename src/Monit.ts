@@ -1,9 +1,10 @@
-import { Application } from 'atma-server'
+//import { Application } from 'atma-server'
 import { MonitWorker, IMonitOptions } from './MonitWorker';
 import { ILoggerOpts, EmptyLoggerFile, LoggerFile, ILogger } from './fs/LoggerFile';
 import { ChannelReader } from './reader/ChannelReader';
 import { Everlog } from './Everlog';
 
+declare type Application = any;
 
 export namespace Monit {
     let monit: MonitWorker;

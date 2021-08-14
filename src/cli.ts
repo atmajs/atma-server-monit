@@ -1,4 +1,4 @@
-import * as AppCfg from 'appcfg'
+import AppCfg from 'appcfg'
 import * as ruta from 'ruta'
 import { Everlog } from './Everlog';
 import { LogsReader } from './reader/LogsReader';
