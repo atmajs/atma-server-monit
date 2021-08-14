@@ -10,7 +10,7 @@
     "license": "MIT",
     "keywords": [ "log", "logger", "monitor", "slack" ],
     "scripts": {
-        "build": "app-bundler -LIB && npm run build-dts && cd www && npm run build",
+        "build": "app-bundler -LIB && npm run build-dts && npm run typedoc && cd www && npm run build",
         "watch": "app-bundler --watch",
         "example": "node examples/server --TEST --debug --monit.pss foo",
         "release": "echo atma pub -m \"Message\"",

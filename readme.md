@@ -15,11 +15,13 @@
         </a>
 </p>
 
-> 📔 High-performance fs logging with **buffering**, **file retention**, **thread safety**, **CSV streams** and **log viewer** for every day usage.
+📔 High-performance fs logging with **buffering**, **file retention**, **thread safety**, **CSV streams** and **log viewer** for every day usage.
+
+> With `CSV` Streams (`channels`, `tables`) you make your logs structurable.
 
 #### CLI
 
-```
+```bash
 $ npm i -g everlog
 
 # Help
@@ -39,11 +41,11 @@ $ everlog server --port=5772
 
 ```
 
-#### [API](https://docs.atma.dev/everlog)
+#### [API ↗](https://docs.atma.dev/everlog)
 
 
 
-1. Initialize the everlog
+1. Initialize the Everlog
 
 ```ts
 import { Everlog } from 'everlog'
@@ -79,6 +81,7 @@ channel.writeRow([`Lorem ipsum`, 123, new Date()]);
 // On the application end flush data (in case there is smth in the buffer)
 Everlog.flush();
 ```
+
 
 ## Dev
 
