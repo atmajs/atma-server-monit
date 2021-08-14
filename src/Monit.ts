@@ -1,22 +1,20 @@
 import { Application } from 'atma-server'
 import { MonitWorker, IMonitOptions } from './MonitWorker';
 import { ILoggerOpts, EmptyLoggerFile, LoggerFile, ILogger } from './fs/LoggerFile';
-import { class_Uri } from 'atma-utils';
 import { ChannelReader } from './reader/ChannelReader';
+import { Everlog } from './Everlog';
 
 
 export namespace Monit {
     let monit: MonitWorker;
 
     export async function startLogger (opts: IMonitOptions) {
-        if (monit == null) {
-            monit = new MonitWorker(null, { ...(opts ?? {}), disableDefaultLoggers: true });
-            await monit.restoreChannelsAsync();
-        }
+        await Everlog.initialize(opts);
     }
 
     export function start (app: Application, opts: IMonitOptions) {
-        monit = new MonitWorker(app.lifecycle, opts);
+        monit = new MonitWorker(opts);
+        monit.watchServer(app.lifecycle);
         monit.restoreChannelsAsync();
 
         let basicAuth = require('express-basic-auth');

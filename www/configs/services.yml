@@ -1,0 +1,12 @@
+env:
+  both:
+    include:
+      cfg:
+        amd: true
+        extentionDefault:
+          js: ts
+
+service:
+  endpoints: '/www/endpoints/'
+
+services:

@@ -37,7 +37,6 @@ declare module 'atma-server-monit/MonitWorker' {
         filterForSlack?: (event: LifecycleEvent) => boolean;
     }
     export class MonitWorker {
-        events: LifecycleEvents;
         opts: IMonitOptions & {
             disableDefaultLoggers?: boolean;
         };
@@ -48,12 +47,12 @@ declare module 'atma-server-monit/MonitWorker' {
             errors?: LoggerFile;
             [name: string]: LoggerFile;
         };
-        constructor(events: LifecycleEvents, opts: IMonitOptions & {
+        constructor(opts: IMonitOptions & {
             disableDefaultLoggers?: boolean;
         });
         createChannel(name: string, opts?: Partial<ILoggerOpts>): LoggerFile;
         createChannelReader(channel: LoggerFile): ChannelReader;
-        watch(events: LifecycleEvents): void;
+        watchServer(events: LifecycleEvents): void;
         writeError(error: Error): void;
         /** Flush all buffered content to disk */
         flush(): void;
@@ -147,6 +146,10 @@ declare module 'atma-server-monit/reader/ChannelReader' {
                     rows: any[][];
                     size: number;
             }>;
+            stats(): Promise<{
+                    files: number;
+                    lines: number;
+            }>;
             protected getReaders(): Promise<FileReader[]>;
     }
 }
@@ -192,8 +195,15 @@ declare module 'atma-server-monit/reader/FileReader' {
             total: number;
             rows: any[][];
         }>;
+        stats(): Promise<{
+            lines: number;
+        }>;
     }
     export namespace Csv {
+        function detectFields(row: string[]): {
+            type: any;
+            name: string;
+        }[];
         function parseType(val: string, field: ICsvColumn): string | number | Date;
         function splitRow(row: string): any[];
     }
@@ -218,6 +228,10 @@ declare module 'atma-server-monit/reader/LogsReader' {
                     directory: string;
                     columns: ICsvColumn[];
             };
+            getChannelStats(key: string): Promise<{
+                    files: number;
+                    lines: number;
+            }>;
             getChannelDays(key: string): Promise<{
                     day: string;
             }[]>;

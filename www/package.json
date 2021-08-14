@@ -2,7 +2,7 @@
     "private": true,
     "version": "0.0.1",
     "scripts": {
-        "build": "app-bundler",
+        "build": "app-bundler -LIB",
         "watch": "app-bundler --watch"
     },
     "dependencies": {

@@ -29,8 +29,16 @@ export class LogsReader {
             directory: channel.directory,
             columns: channel.opts.fields
         };
-
     }
+    getChannelStats (key: string) {
+        let channel = this.monit.loggers[key];
+        if (channel == null) {
+            throw new Error(`Channel ${key} not found`);
+        }
+        let channelReader = new ChannelReader(channel);
+        return channelReader.stats();
+    }
+
     async getChannelDays (key: string) {
         let channel = this.monit.loggers[key];
         if (channel == null) {

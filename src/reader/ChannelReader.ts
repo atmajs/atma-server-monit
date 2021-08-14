@@ -65,15 +65,19 @@ export class ChannelReader {
         return days;
     }
     async getData (query: GetChannelParams) {
-        let rangeStart = query.rangeStart;
-        let rangeEnd = query.rangeEnd ?? new Date();
-        if (rangeStart == null) {
-            rangeStart = new Date(
-                rangeEnd.getFullYear(),
-                rangeEnd.getMonth(),
-                rangeEnd.getDate(),
-                0, 0, 0, 0
-            );
+        if (query.rangeStart != null || query.rangeEnd != null) {
+            let rangeStart = query.rangeStart;
+            let rangeEnd = query.rangeEnd ?? new Date();
+            if (rangeStart == null) {
+                rangeStart = new Date(
+                    rangeEnd.getFullYear(),
+                    rangeEnd.getMonth(),
+                    rangeEnd.getDate(),
+                    0, 0, 0, 0
+                );
+            }
+            query.rangeStart = rangeStart;
+            query.rangeEnd = rangeEnd;
         }
 
         let channel = this.channel;
@@ -86,23 +90,61 @@ export class ChannelReader {
             if (query.day != null) {
                 return query.day.isEqual(reader.day);
             }
-
-            if (reader.day.isAfter(rangeEnd)) {
-                return false;
+            if (query.rangeEnd != null) {
+                if (reader.day.isAfter(query.rangeEnd)) {
+                    return false;
+                }
             }
-            if (reader.day.isBefore(rangeStart)) {
-                return false;
+            if (query.rangeStart != null) {
+                if (reader.day.isBefore(query.rangeStart)) {
+                    return false;
+                }
             }
             return true;
         });
 
 
-        let rows = await alot(readers)
-            .sortBy(x => x.day.valueOf(), 'desc')
-            .mapManyAsync(async reader => {
-                return await reader.read();
-            })
-            .toArrayAsync();
+
+        let rows: string[][] = null;
+        if (query.offset != null || query.limit != null) {
+            let offset = query.offset ?? 0;
+            let limit = query.limit ?? 50;
+            let total = 0;
+            rows = await alot(readers)
+                .sortBy(x => x.day.valueOf(), 'desc')
+                .mapAsync(async reader => {
+                    let stats = await reader.stats();
+                    return {
+                        stats, reader
+                    };
+                })
+                .skipWhileAsync(({ stats, reader }) => {
+                    if (offset > stats.lines) {
+                        offset = offset - stats.lines;
+                        return true;
+                    }
+                    return false;
+                })
+                .takeWhileAsync(({ stats, reader }) => {
+                    let more = total < offset + limit;
+                    total += stats.lines;
+                    return more;
+                })
+                .mapManyAsync(async ({reader}) => {
+                    return await reader.read();
+                })
+                .toArrayAsync();
+
+            query.offset = offset;
+            query.limit = limit;
+        } else {
+            rows = await alot(readers)
+                .sortBy(x => x.day.valueOf(), 'desc')
+                .mapManyAsync(async reader => {
+                    return await reader.read();
+                })
+                .toArrayAsync();
+        }
 
         if (fields == null) {
             fields = rows?.[0]?.map((x, idx) => {
@@ -119,6 +161,19 @@ export class ChannelReader {
             rows: table.getTable(query),
             size: table.size
         }
+    }
+
+    async stats () {
+        let readers = await this.getReaders();
+        let stats = await alot(readers)
+            .mapAsync(reader => reader.stats())
+            .toArrayAsync();
+
+        let lines = alot(stats).sum(x => x.lines ?? 0);
+        return {
+            files: readers.length,
+            lines
+        };
     }
 
     protected async getReaders () {

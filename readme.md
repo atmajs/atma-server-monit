@@ -1,21 +1,28 @@
-Atma Server Monit
+# Everlog
+
+<p align='center'>
+    <img src='assets/background.png'/>
+</p>
+
 -----
 
+
+
 <p align="center">
-    <a href='https://travis-ci.com/atmajs/atma-server-monit' target='_blank'>
-        <img src='https://api.travis-ci.com/atmajs/atma-server-monit.png?branch=master' />
+    <a href='https://travis-ci.com/atmajs/everlog' target='_blank'>
+        <img src='https://api.travis-ci.com/atmajs/everlog.png?branch=master' />
         </a>
-    <a href='http://badge.fury.io/js/atma-server-monit' target='_blank'>
-        <img src='https://badge.fury.io/js/atma-server-monit.svg' />
+    <a href='http://badge.fury.io/js/everlog' target='_blank'>
+        <img src='https://badge.fury.io/js/everlog.svg' />
         </a>
 </p>
 
-> High-performance fs logging with buffering, file retention and thread safe.
+> High-performance fs logging with **buffering**, **file retention**, **thread safe** and **csv-streams** for every day usage.
 
 1. Simple Request and Error watcher - logs to fs and slack.
 
 ```ts
-import { Monit } from 'atma-server-monit'
+import { Everlog } from 'everlog'
 
 Monit.start(app.lifecycle, {
     directory: `./logs/`,

@@ -2,7 +2,7 @@ import { FileReader } from '../src/reader/FileReader';
 import { LoggerFile } from '../src/fs/LoggerFile';
 import { class_Uri } from 'atma-utils';
 import { File, Directory } from 'atma-io';
-import { Monit } from '../src/index';
+import { Monit } from '../src/Monit';
 
 UTest({
     $config: {

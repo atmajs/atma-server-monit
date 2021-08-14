@@ -1,10 +1,10 @@
 
 import { LogsReader } from '../src/reader/LogsReader';
-import { MonitWorker } from '../src/MonitWorker'
+import { Everlog } from '../src/Everlog'
 
 UTest({
     async 'should parse csv' () {
-        let monit = new MonitWorker(null, {
+        let monit = await Everlog.initialize({
             directory: './test/fixtures/'
         });
 

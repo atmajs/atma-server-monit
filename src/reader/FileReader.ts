@@ -89,7 +89,6 @@ export class FileReader {
         }
 
         let { total, rows: lines } = FilterUtils.fetch(idx.lines as any, 2, opts);
-
         let start = alot(lines).min(x => x[Idx_LINE_START]);
         let end = alot(lines).max(x => x[Idx_LINE_END]);
 
@@ -98,6 +97,19 @@ export class FileReader {
         return {
             total,
             rows
+        };
+    }
+
+    async stats () {
+        let idx = await this.readIndex();
+        if (idx != null) {
+            return {
+                lines: idx.lineCount
+            };
+        }
+        let rows = await this.read();
+        return {
+            lines: rows.length
         };
     }
 
@@ -135,17 +147,26 @@ export class FileReader {
         }
 
         let fields = this.fields;
+        let fieldsResolved = false;
         let rows = arr.reverse().map(row => {
             if (row === '') {
                 return null;
             }
             let cells = Csv.splitRow(row);
             if (fields == null) {
+                if (fieldsResolved === false && cells.length > 0) {
+                    fieldsResolved = true;
+                    fields = Csv.detectFields(cells);
+                }
                 return cells;
             }
-            return fields.map((field, index) => {
+            let values = fields.map((field, index) => {
                 return Csv.parseType(cells[index], field);
             });
+            if (fields.length < cells.length) {
+                values = values.concat(cells.slice(fields.length));
+            }
+            return values;
         });
         return {
             rows: rows.filter(Boolean),
@@ -155,9 +176,28 @@ export class FileReader {
 }
 
 export namespace Csv {
+    const ISO_DATE = /^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}/;
+    const NUMBER = /^[\d.,]+$/;
+    const BOOLEAN = /(true|false)/i;
+    export function detectFields (row: string[]) {
+
+        return row.map((val, index) => {
+            let type;
+
+            if (ISO_DATE.test(val)) {
+                type = 'date';
+            } else if (NUMBER.test(val)) {
+                type = 'number';
+            } else if (BOOLEAN.test(val)) {
+                type = 'boolean';
+            }
+            return { type, name: `Column ${index + 1}` };
+        })
+    }
+
     export function parseType (val: string, field: ICsvColumn) {
-        if (!val) {
-            return null;
+        if (!val || field == null) {
+            return val;
         }
         switch (field.type) {
             case 'number':

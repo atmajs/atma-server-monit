@@ -1,4 +1,4 @@
-import alot = require('alot');
+import alot from 'alot';
 import { ICsvColumn } from './ICsvColumn';
 
 export interface ITableQuery {
@@ -27,7 +27,10 @@ export class Table {
 
     constructor (private fields: ICsvColumn[], public rows: any[][]) {
 
-        this.dateIdx = fields.findIndex(x => x.type === 'date');
+        this.fields = fields = fields ?? [];
+
+        let idx = fields?.findIndex(x => x.type === 'date') ?? -1;
+        this.dateIdx = idx === -1 ? 0 : idx;
         fields.forEach((f, idx) => f.idx = idx);
     }
 

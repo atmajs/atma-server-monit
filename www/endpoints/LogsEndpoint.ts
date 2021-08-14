@@ -1,6 +1,7 @@
 import { HttpEndpoint, HttpError } from 'atma-server';
 import { Directory } from 'atma-io'
 import { GetChannelParams, LogsReader } from '../../src/reader/LogsReader';
+import { Everlog } from '../../src/Everlog';
 
 
 const { fromUri, fromBody, Types } = HttpEndpoint;
@@ -13,10 +14,13 @@ class GetChannelResponse {
 @HttpEndpoint.route('/api/logs')
 export default class extends HttpEndpoint {
 
+    reader = new LogsReader(this.app.lib.monit ?? Everlog.monit);
+
     async '$get /channels' (
         req
     ) {
-        let reader = new LogsReader(this.app.lib.monit);
+        console.log(Everlog.monit?.loggers);
+        let reader = new LogsReader(this.app.lib.monit ?? Everlog.monit);
         return await reader.getChannels();
     }
 
@@ -32,8 +36,7 @@ export default class extends HttpEndpoint {
     async '$get /channel' (
         @fromUri({ Type: GetChannelParams }) params: GetChannelParams
     ) {
-        let reader = new LogsReader(this.app.lib.monit);
-        let channels = await reader.getChannels();
+        let channels = await this.reader.getChannels();
         let channel = channels.find(x => x.name === params.key);
         if (channel == null) {
             throw new HttpError(`Channel not found: ${params.key}`, 400);
@@ -52,15 +55,13 @@ export default class extends HttpEndpoint {
     async '$get /channel/:key' (
         @fromUri({ Type: GetChannelParams }) params: GetChannelParams
     ) {
-        let reader = new LogsReader(this.app.lib.monit);
-        let channel = reader.getChannelInfo(params.key);
-        return reader.getChannelData(params);
+        let channel = this.reader.getChannelInfo(params.key);
+        return this.reader.getChannelData(params);
     }
 
     async '$get /channel/:key/days' (
         @fromUri({ Type: GetChannelParams }) params: GetChannelParams
     ) {
-        let reader = new LogsReader(this.app.lib.monit);
-        return reader.getChannelDays(params.key);
+        return this.reader.getChannelDays(params.key);
     }
 }

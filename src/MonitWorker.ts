@@ -1,6 +1,6 @@
+import alot from 'alot';
 import { LifecycleEvent, LifecycleEvents } from 'atma-server/HttpApplication/LifecycleEvents';
 import { class_Uri } from 'atma-utils';
-import alot from 'alot';
 import { SlackClient } from './Slack';
 import { LoggerFile, ILoggerOpts } from './fs/LoggerFile';
 import { Csv } from './utils/csv';
@@ -31,15 +31,35 @@ export class MonitWorker {
         errors?: LoggerFile
 
         [name: string]: LoggerFile
-    }
-    constructor(public events: LifecycleEvents, public opts: IMonitOptions & { disableDefaultLoggers?: boolean }) {
+    } = {}
+
+    constructor (public opts: IMonitOptions & { disableDefaultLoggers?: boolean }) {
         if (opts.slack) {
             this.slack = new SlackClient(opts.slack);
         }
+    }
 
+    createChannel(name: string, opts: Partial<ILoggerOpts> = {}): LoggerFile {
+        if (name in this.loggers) {
+            return this.loggers[name];
+        }
+        return this.loggers[name] = LoggerFile.create(name, {
+            // directory could be overwritten in  options
+            directory: class_Uri.combine(this.opts.directory, name, '/'),
+            ...opts
+        });
+    }
+
+    createChannelReader(channel: LoggerFile) {
+        return new ChannelReader(channel);
+    }
+
+    public watchServer (events: LifecycleEvents) {
+        const opts = this.opts;
         const loggerOpts = {
             directory: opts.directory
         };
+
         this.loggers = opts?.disableDefaultLoggers ? {} : {
             start: LoggerFile.create('start', {
                 fields: [
@@ -113,22 +133,7 @@ export class MonitWorker {
         }
     }
 
-    createChannel(name: string, opts: Partial<ILoggerOpts> = {}): LoggerFile {
-        if (name in this.loggers) {
-            return this.loggers[name];
-        }
-        return this.loggers[name] = LoggerFile.create(name, {
-            // directory could be overwritten in  options
-            directory: class_Uri.combine(this.opts.directory, name, '/'),
-            ...opts
-        });
-    }
-
-    createChannelReader(channel: LoggerFile) {
-        return new ChannelReader(channel);
-    }
-
-    watch(events: LifecycleEvents) {
+    private watch(events: LifecycleEvents) {
         events.on('AppStart', (event) => {
             this.slack?.send(event.message);
             this.loggers.start.write(
@@ -165,7 +170,7 @@ export class MonitWorker {
             `${new Date().toISOString()}, ${Err.serializeError(error)}`
         );
         if (this.opts?.filterForSlack(<any>{ error })) {
-            this.slack?.send(event.toString());
+            this.slack?.send(error.toString());
         }
     }
 
