@@ -17,7 +17,7 @@ export class ChannelReader {
     constructor (public channel: LoggerFile) {
 
     }
-    async fetch (query: IChannelLinesQuery) {
+    async fetch (query: IChannelLinesQuery = {}) {
         let readers = await this.getReaders();
         let result = [];
 

@@ -240,8 +240,11 @@ export class LoggerFile implements ILogger {
         const path = Path.resolve(this.opts.directory, filename);
         const file = new FileHandler(path, this.opts);
 
-        if (this.opts.addCsvHeader) {
-            file.write(LoggerFileHeader.serialize(this.opts));
+        if (this.opts.addCsvHeader !== false) {
+            let header = LoggerFileHeader.serialize(this.opts);
+            if (header != null) {
+                file.write(header);
+            }
         }
         return file;
     }

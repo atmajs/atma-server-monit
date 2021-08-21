@@ -6,14 +6,16 @@ export namespace LoggerFileHeader {
     export const BUFFER = [ 0xe2, 0x80, 0x96 ];
 
     export function serialize (opts: ILoggerOpts) {
-        let line = opts
-            ?.fields
+        if (opts == null) {
+            return null;
+        }
+        let line = (opts.fields ?? opts.columns)
             ?.map(field => {
                 return `${field.name}:${field.type}`;
             })
             .join(',');
 
-        if (line) {
+        if (line != null) {
             line = `${SYMBOL}${line}`;
         }
         return line;

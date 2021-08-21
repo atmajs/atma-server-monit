@@ -155,7 +155,7 @@ declare module 'everlog/reader/ChannelReader' {
     export class ChannelReader {
             channel: LoggerFile;
             constructor(channel: LoggerFile);
-            fetch(query: IChannelLinesQuery): Promise<{
+            fetch(query?: IChannelLinesQuery): Promise<{
                     rows: any[];
             }>;
             getDays(): Promise<{
