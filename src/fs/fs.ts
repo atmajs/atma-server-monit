@@ -70,21 +70,20 @@ export function file_remove(path) {
 
 export function file_appendAsync(path, str, callback) {
     if (!str) {
-        callback();
+        callback?.();
         return;
     }
-
     Fs.open(path, 'a', function (error, fd) {
         if (error != null) {
             exception_(path, error);
-            callback(error);
+            callback?.(error);
             return;
         }
         Fs.write(fd, str, (error) => {
             if (error != null) {
                 exception_(path, error);
             }
-            Fs.close(fd, () => callback());
+            Fs.close(fd, () => callback?.());
         })
     });
 };
