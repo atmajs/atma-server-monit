@@ -71,6 +71,7 @@ declare module 'everlog/MonitWorker' {
         });
         createChannel(name: string, opts?: Partial<ILoggerOpts>): LoggerFile;
         createChannelReader(channel: LoggerFile): ChannelReader;
+        /** Bind Watcher (Requests/Errors) to Atma server Application  */
         watchServer(events: LifecycleEvents): void;
         writeError(error: Error): void;
         /** Flush all buffered content to disk */
@@ -81,7 +82,7 @@ declare module 'everlog/MonitWorker' {
 }
 
 declare module 'everlog/fs/LoggerFile' {
-    import { ICsvColumn } from 'everlog/model/ICsvColumn';
+    import { ICsvColumn, ICsvColumnValue, ICsvDictionary } from 'everlog/model/ICsvColumn';
     export interface ILoggerOpts {
         directory: string;
         fileCountMax?: number;
@@ -94,16 +95,22 @@ declare module 'everlog/fs/LoggerFile' {
         columns?: ICsvColumn[];
     }
     export interface ILogger {
-        writeRow(cells: any[]): any;
+        writeRow(cells: any[], additional?: (ICsvColumn & {
+            value: any;
+        })[]): any;
         write(mix: string | any[]): void;
         flush(): any;
         removeAll(): Promise<any>;
     }
     export class EmptyLoggerFile implements ILogger {
-        writeRow(cells: any[]): void;
-        write(mix: string | any[]): void;
-        flush(): void;
-        removeAll(): any;
+        name: any;
+        opts: any;
+        constructor(name: any, opts: any);
+        writeRow(...args: Parameters<ILogger['writeRow']>): any;
+        write(...args: Parameters<ILogger['write']>): void;
+        flush(): any;
+        removeAll(): Promise<any>;
+        pipe(channel: ILogger): void;
     }
     export class LoggerFile implements ILogger {
         directory: string;
@@ -112,7 +119,7 @@ declare module 'everlog/fs/LoggerFile' {
         static prepair(opts: ILoggerOpts): LoggerFile;
         static restore(directory: string, key: string, options?: ILoggerOpts): Promise<LoggerFile>;
         protected constructor(opts: ILoggerOpts);
-        writeRow(cells: any[]): void;
+        writeRow(cells: any[], additional?: ICsvDictionary | ICsvColumnValue[]): void;
         writeRows(cellsMany: any[][]): void;
         write(mix: string | any[]): void;
         get path(): string;
@@ -183,6 +190,12 @@ declare module 'everlog/model/ICsvColumn' {
         groupable?: boolean;
         sortable?: boolean;
         filterable?: boolean;
+    }
+    export interface ICsvColumnValue extends ICsvColumn {
+        value: any;
+    }
+    export interface ICsvDictionary {
+        [name: string]: any;
     }
 }
 

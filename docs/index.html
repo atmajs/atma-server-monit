@@ -111,20 +111,28 @@
 <span style="color: #000000">    </span><span style="color: #001080">slack:</span><span style="color: #000000"> {</span>
 <span style="color: #000000">        </span><span style="color: #001080">token:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
 <span style="color: #000000">        </span><span style="color: #001080">channelId:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;&#039;</span>
-<span style="color: #000000">    },</span>
-
-<span style="color: #000000">    </span><span style="color: #001080">fileCountMax:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">fileBytesMax:</span><span style="color: #000000"> </span><span style="color: #098658">500</span><span style="color: #000000"> * </span><span style="color: #098658">1024</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #001080">fileMessagesMax</span><span style="color: #000000">: </span><span style="color: #098658">10</span><span style="color: #000000"> ** </span><span style="color: #098658">7</span>
-<span style="color: #000000">    </span><span style="color: #001080">messageBufferMax</span><span style="color: #000000">: </span><span style="color: #098658">50</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #001080">columns</span><span style="color: #000000">: [] </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">ICsvColumn</span><span style="color: #000000">[];</span>
+<span style="color: #000000">    }</span>
 <span style="color: #000000">});</span>
 </code></pre>
 				<ol start="2">
 					<li>Create Log Streams</li>
 				</ol>
 				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">channel</span><span style="color: #000000"> = </span><span style="color: #001080">Everlog</span><span style="color: #000000">.</span><span style="color: #795E26">createChannel</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;foo&#039;</span><span style="color: #000000">, {</span>
-<span style="color: #000000">    </span><span style="color: #001080">columns:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Keep only last N files</span>
+<span style="color: #000000">    </span><span style="color: #001080">fileCountMax:</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Limit size for a file. When reached, next file is created</span>
+<span style="color: #000000">    </span><span style="color: #001080">fileBytesMax:</span><span style="color: #000000"> </span><span style="color: #098658">500</span><span style="color: #000000"> * </span><span style="color: #098658">1024</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Limit message count for a file. When reached, next file is created</span>
+<span style="color: #000000">    </span><span style="color: #001080">fileMessagesMax</span><span style="color: #000000">: </span><span style="color: #098658">10</span><span style="color: #000000"> ** </span><span style="color: #098658">7</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Buffer N messages</span>
+<span style="color: #000000">    </span><span style="color: #001080">messageBufferMax</span><span style="color: #000000">: </span><span style="color: #098658">50</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #001080">columns</span><span style="color: #000000">: [] </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">ICsvColumn</span><span style="color: #000000">[];</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// Flush logs, when no activity was for N milliseconds</span>
+<span style="color: #000000">    </span><span style="color: #001080">writeTimeout</span><span style="color: #000000">: </span><span style="color: #0000FF">null</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #267F99">number</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">columns</span><span style="color: #000000">: [</span>
 <span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Title&#039;</span><span style="color: #000000">, </span><span style="color: #001080">filterable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
 <span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;MyVal&#039;</span><span style="color: #000000">, </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;number&#039;</span><span style="color: #000000">, </span><span style="color: #001080">sortable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #001080">groupable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
 <span style="color: #000000">        { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Timestamp&#039;</span><span style="color: #000000">, </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;date&#039;</span><span style="color: #000000">, </span><span style="color: #001080">sortable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">, </span><span style="color: #001080">groupable:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000"> },</span>
@@ -133,7 +141,7 @@
 
 <span style="color: #001080">channel</span><span style="color: #000000">.</span><span style="color: #795E26">writeRow</span><span style="color: #000000">([</span><span style="color: #A31515">`Lorem ipsum`</span><span style="color: #000000">, </span><span style="color: #098658">123</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">()]);</span>
 
-<span style="color: #008000">// On the application end flush data (in case there is smth in the buffer)</span>
+<span style="color: #008000">// On the application end flush the data (in case there is smth in the buffer)</span>
 <span style="color: #001080">Everlog</span><span style="color: #000000">.</span><span style="color: #795E26">flush</span><span style="color: #000000">();</span>
 </code></pre>
 				<a href="#dev" id="dev" style="color: inherit; text-decoration: none;">

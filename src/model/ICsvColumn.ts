@@ -8,3 +8,11 @@ export interface ICsvColumn {
     sortable?: boolean;
     filterable?: boolean;
 }
+
+export interface ICsvColumnValue extends ICsvColumn {
+    value: any
+}
+
+export interface ICsvDictionary {
+    [name: string]: any
+}

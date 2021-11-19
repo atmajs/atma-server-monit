@@ -57,6 +57,7 @@ export class MonitWorker {
         return new ChannelReader(channel);
     }
 
+    /** Bind Watcher (Requests/Errors) to Atma server Application  */
     public watchServer (events: LifecycleEvents) {
         const opts = this.opts;
         const loggerOpts = {
@@ -187,9 +188,9 @@ export class MonitWorker {
     async restoreChannelsAsync() {
         let channels = Object.keys(this.loggers);
         let directoryExists = false;
-        try {
+
             directoryExists = await Directory.existsAsync(this.opts.directory);
-        } catch (error) { }
+
 
         if (directoryExists === true) {
             let files = await dir_readAsync(this.opts.directory);

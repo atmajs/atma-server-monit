@@ -3,6 +3,7 @@ import { MonitWorker, IMonitOptions } from './MonitWorker';
 import { ILoggerOpts, EmptyLoggerFile, LoggerFile, ILogger } from './fs/LoggerFile';
 import { ChannelReader } from './reader/ChannelReader';
 import { Everlog } from './Everlog';
+import alot from 'alot';
 
 declare type Application = any;
 
@@ -21,14 +22,18 @@ export namespace Monit {
         let basicAuth = require('express-basic-auth');
         let base = 'file://' + __dirname.replace(/\\/g, '/').replace(/[^\/]+\/?$/, 'www/');
 
-        let pss = app.config.$get('monit.pss') ?? app.config.$get('server.monit.pss');
+        let keys = ['monit.pss', 'server.monit.pss', 'everlog.pss', 'server.everlog.pss'];
+        let pss = alot(keys)
+            .map(key => app.config.$get(key))
+            .first();
+
         let noPssFn = function (req, res, next) {
-            next(new Error(`Password not set in 'monit.pss' nor in 'server.monit.pss'`));
+            next(new Error(`Password not set in 'everlog.pss' nor in 'server.everlog.pss'`));
         };
         let basicAuthFn = pss == null ? noPssFn : basicAuth({
             users: { [pss]: pss },
             challenge: true,
-            realm: 'MonitPss'
+            realm: 'EverlogPss'
         });
 
         const { Application, StaticContent } = require('atma-server');
@@ -70,7 +75,7 @@ export namespace Monit {
         app.handlers.registerSubApp('atma/monit', subApp, null);
     }
     export function createChannel (name: string, opts?: Partial<ILoggerOpts>): ILogger {
-        return monit?.createChannel(name, opts) ?? new EmptyLoggerFile();
+        return monit?.createChannel(name, opts) ?? new EmptyLoggerFile(name, opts);
     }
 
     export function createChannelReader (channel: LoggerFile)

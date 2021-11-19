@@ -81,7 +81,7 @@ export class ChannelReader {
         }
 
         let channel = this.channel;
-        let fields: ICsvColumn[] = channel.opts.fields ?? channel.opts.columns;
+        let columns: ICsvColumn[] = channel.opts.fields ?? channel.opts.columns;
 
         let directory = DirectoryReader.create(channel)
         let readers = await directory.readFiles();
@@ -102,8 +102,6 @@ export class ChannelReader {
             }
             return true;
         });
-
-
 
         let rows: string[][] = null;
         if (query.offset != null || query.limit != null) {
@@ -146,8 +144,8 @@ export class ChannelReader {
                 .toArrayAsync();
         }
 
-        if (fields == null) {
-            fields = rows?.[0]?.map((x, idx) => {
+        if (columns == null) {
+            columns = rows?.[0]?.map((x, idx) => {
                 return {
                     idx: idx,
                     name: '',
@@ -155,12 +153,12 @@ export class ChannelReader {
                 }
             });
         }
-        let table = new Table(fields, rows);
+        let table = new Table(columns, rows);
         return {
-            columns: fields,
+            columns: columns,
             rows: table.getTable(query),
             size: table.size
-        }
+        };
     }
 
     async stats () {

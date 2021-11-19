@@ -1,14 +1,15 @@
 import { file_readSize, file_appendAsync, file_append, dir_ensure, dir_read, file_remove } from './fs';
 import { os_EndOfLine } from '../utils/os';
 import * as Path from 'path'
-import  * as Formatter from 'atma-formatter'
+import * as Formatter from 'atma-formatter'
 import { date_getMidnight } from '../utils/date';
 import { class_Uri } from 'atma-utils';
 import { Directory, File } from 'atma-io';
 import { Csv } from '../utils/csv';
-import { ICsvColumn } from '../model/ICsvColumn';
+import { ICsvColumn, ICsvColumnValue, ICsvDictionary } from '../model/ICsvColumn';
 import { LoggerFileHeader } from './LoggerFileHeader';
 import { LoggerFileRow } from './LoggerFileRow';
+import alot from 'alot';
 
 
 export interface ILoggerOpts {
@@ -26,24 +27,33 @@ export interface ILoggerOpts {
     columns?: ICsvColumn[]
 }
 export interface ILogger {
-    writeRow (cells: any[])
+    writeRow(cells: any[], additional?: (ICsvColumn & { value: any })[])
     write(mix: string | any[]): void
-    flush ()
-    removeAll (): Promise<any>
+    flush()
+    removeAll(): Promise<any>
 }
 
 export class EmptyLoggerFile implements ILogger {
-    writeRow(cells: any[]) {
+    private channel: ILogger;
+
+    constructor(public name, public opts) {
 
     }
-    write(mix: string | any[]): void {
-
+    writeRow(...args: Parameters<ILogger['writeRow']>) {
+        return this.channel?.writeRow(...args);
+    }
+    write(...args: Parameters<ILogger['write']>): void {
+        return this.channel?.write(...args);
     }
     flush() {
-
+        return this.channel.flush();
     }
-    removeAll () {
-        return null;
+    removeAll() {
+        return this.channel?.removeAll();
+    }
+
+    pipe (channel: ILogger) {
+        this.channel = channel;
     }
 }
 export class LoggerFile implements ILogger {
@@ -58,7 +68,7 @@ export class LoggerFile implements ILogger {
     private _writeTimer = null;
     private _initialized = false;
 
-    static create (key: string, opts: ILoggerOpts) {
+    static create(key: string, opts: ILoggerOpts) {
         // @BackComp in case key is already a part of a directory
         let hasKeyInPath = new RegExp(`${key}/?$`).test(opts.directory ?? '');
 
@@ -71,16 +81,16 @@ export class LoggerFile implements ILogger {
         return logger;
     }
 
-    static prepair (opts: ILoggerOpts) {
+    static prepair(opts: ILoggerOpts) {
         let logger = new LoggerFile(opts);
         return logger;
     }
 
-    static async restore (directory: string, key: string, options?: ILoggerOpts) {
+    static async restore(directory: string, key: string, options?: ILoggerOpts) {
         let directoryPath = class_Uri.combine(directory, key, '/');
         let metaPath = class_Uri.combine(directoryPath, 'meta.json');
 
-        let opts = <ILoggerOpts> {
+        let opts = <ILoggerOpts>{
             directory: directoryPath,
             ...(options ?? {})
         };
@@ -97,16 +107,45 @@ export class LoggerFile implements ILogger {
         return logger;
     }
 
-    protected constructor (opts: ILoggerOpts) {
+    protected constructor(opts: ILoggerOpts) {
         this.initOptions(opts);
         this.onTimeout = this.onTimeout.bind(this);
     }
 
-    writeRow (cells: any[]) {
-        let row = LoggerFileRow.serialize(cells, this.opts.fields);
+    writeRow(cells: any[], additional?: ICsvDictionary | ICsvColumnValue[]) {
+        let columns = this.opts.fields ?? this.opts.columns;
+
+        if (additional != null) {
+            let arr: ICsvColumnValue[];
+            if (Array.isArray(additional) === false) {
+                arr = Object.keys(additional).map(key => ({
+                    name: key,
+                    value: additional[key]
+                }));
+            } else {
+                arr = additional as ICsvColumnValue[];
+            }
+
+            let count = cells.length;
+            let values = [];
+            for (let i = 0; i < arr.length; i++) {
+                let col = arr[i];
+                let colIndex = columns.findIndex(x => x.name === col.name);
+                if (colIndex === -1) {
+                    colIndex = -1 + columns.push(<any>{
+                        ...col,
+                        type: col.type ?? Csv.getTypeFromValue(col.value),
+                        value: void 0
+                    });
+                }
+                values[colIndex - count] = col.value;
+            }
+            cells.push(...values);
+        }
+        let row = LoggerFileRow.serialize(cells, columns);
         this.write(row);
     }
-    writeRows (cellsMany: any[][]) {
+    writeRows(cellsMany: any[][]) {
         let rows = cellsMany.map(cells => LoggerFileRow.serialize(cells, this.opts.fields));
         this.write(rows.join('\n'));
     }
@@ -142,11 +181,11 @@ export class LoggerFile implements ILogger {
             this._writeTimer = setTimeout(this.onTimeout, this.opts.writeTimeout)
         }
     }
-    get path () {
+    get path() {
         return this._file?.path;
     }
 
-    flush () {
+    flush() {
         this.flushSync();
     }
 
@@ -157,7 +196,7 @@ export class LoggerFile implements ILogger {
         return null;
     }
 
-    protected initOptions (opts: ILoggerOpts) {
+    protected initOptions(opts: ILoggerOpts) {
         this.opts = opts;
         if (/^(\.?\/)/.test(opts.directory)) {
             opts.directory = Path.resolve(process.cwd(), opts.directory);
@@ -180,7 +219,7 @@ export class LoggerFile implements ILogger {
         this.directory = opts.directory;
     }
 
-    protected init () {
+    protected init() {
         this._initialized = true;
 
         dir_ensure(this.directory);
@@ -236,7 +275,7 @@ export class LoggerFile implements ILogger {
 
         const d = new Date();
         // TIMESTAMP_FILECOUNTER_READABLETIME
-        const filename = `${ d.getTime() }_${this._idx}__${Formatter(d, 'yyyy-MM-dd')}.csv`;
+        const filename = `${d.getTime()}_${this._idx}__${Formatter(d, 'yyyy-MM-dd')}.csv`;
         const path = Path.resolve(this.opts.directory, filename);
         const file = new FileHandler(path, this.opts);
 
@@ -249,17 +288,17 @@ export class LoggerFile implements ILogger {
         return file;
     }
 
-    private onTimeout () {
+    private onTimeout() {
         this.flushAsync();
     }
-    private flushAsync () {
+    private flushAsync() {
         if (this._writeTimer != null) {
             clearTimeout(this._writeTimer);
             this._writeTimer = null;
         }
         this._file.flushAsync();
     }
-    private flushSync () {
+    private flushSync() {
         if (this._writeTimer != null) {
             clearTimeout(this._writeTimer);
             this._writeTimer = null;
@@ -283,7 +322,7 @@ class FileHandler {
             : 0
             ;
     }
-    write (message) {
+    write(message) {
         this.size += message.length + os_EndOfLine.length;
         this.buffer.push(message);
     }

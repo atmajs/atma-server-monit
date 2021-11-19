@@ -55,13 +55,7 @@ await Everlog.initialize({
     slack: {
         token: '',
         channelId: ''
-    },
-
-    fileCountMax: 20,
-    fileBytesMax: 500 * 1024;
-    fileMessagesMax: 10 ** 7
-    messageBufferMax: 50;
-    columns: [] as ICsvColumn[];
+    }
 });
 ```
 
@@ -69,6 +63,20 @@ await Everlog.initialize({
 
 ```ts
 const channel = Everlog.createChannel('foo', {
+    // Keep only last N files
+    fileCountMax: 20,
+    // Limit size for a file. When reached, next file is created
+    fileBytesMax: 500 * 1024;
+    // Limit message count for a file. When reached, next file is created
+    fileMessagesMax: 10 ** 7
+
+    // Buffer N messages
+    messageBufferMax: 50;
+    columns: [] as ICsvColumn[];
+
+    // Flush logs, when no activity was for N milliseconds
+    writeTimeout: null as number;
+
     columns: [
         { name: 'Title', filterable: true },
         { name: 'MyVal', type: 'number', sortable: true, groupable: true },
@@ -78,7 +86,7 @@ const channel = Everlog.createChannel('foo', {
 
 channel.writeRow([`Lorem ipsum`, 123, new Date()]);
 
-// On the application end flush data (in case there is smth in the buffer)
+// On the application end flush the data (in case there is smth in the buffer)
 Everlog.flush();
 ```
 
