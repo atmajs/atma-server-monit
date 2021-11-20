@@ -44,7 +44,11 @@ export class MonitWorker {
 
     createChannel(name: string, opts: Partial<ILoggerOpts> = {}): LoggerFile {
         if (name in this.loggers) {
-            return this.loggers[name];
+            let logger = this.loggers[name];
+            for (let key in opts) {
+                logger.opts[key] = opts[key];
+            }
+            return logger;
         }
         return this.loggers[name] = LoggerFile.create(name, {
             // directory could be overwritten in  options
@@ -187,11 +191,7 @@ export class MonitWorker {
 
     async restoreChannelsAsync() {
         let channels = Object.keys(this.loggers);
-        let directoryExists = false;
-
-            directoryExists = await Directory.existsAsync(this.opts.directory);
-
-
+        let directoryExists = await Directory.existsAsync(this.opts.directory);
         if (directoryExists === true) {
             let files = await dir_readAsync(this.opts.directory);
             await alot(files).forEachAsync(async dirName => {
