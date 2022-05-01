@@ -1,5 +1,6 @@
 import { MonitWorker, IMonitOptions } from './MonitWorker';
-import { ILoggerOpts, EmptyLoggerFile, LoggerFile, ILogger } from './fs/LoggerFile';
+import { EmptyLoggerFile, LoggerFile } from './fs/LoggerFile';
+import { ILogger, ILoggerOpts } from "./interfaces/ILogger";
 import { ChannelReader } from './reader/ChannelReader';
 
 

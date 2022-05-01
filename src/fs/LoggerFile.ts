@@ -10,28 +10,8 @@ import { ICsvColumn, ICsvColumnValue, ICsvDictionary } from '../model/ICsvColumn
 import { LoggerFileHeader } from './LoggerFileHeader';
 import { LoggerFileRow } from './LoggerFileRow';
 import alot from 'alot';
+import { ILogger, ILoggerOpts } from '../interfaces/ILogger';
 
-
-export interface ILoggerOpts {
-    directory: string
-    fileCountMax?: number
-    fileBytesMax?: number
-    fileMessagesMax?: number
-    messageBufferMax?: number
-    writeTimeout?: number
-    fields?: ICsvColumn[]
-
-    addCsvHeader?: boolean
-
-    //@obsolete Use fields
-    columns?: ICsvColumn[]
-}
-export interface ILogger {
-    writeRow(cells: any[], additional?: (ICsvColumn & { value: any })[])
-    write(mix: string | any[]): void
-    flush()
-    removeAll(): Promise<any>
-}
 
 export class EmptyLoggerFile implements ILogger {
     private channel: ILogger;

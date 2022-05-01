@@ -1,6 +1,6 @@
 {
     "name": "everlog",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "CSV Streamed Logger for any case",
     "author": "Alex Kit (alex.kit@atmajs.com)",
     "main": "lib/index.js",
@@ -15,11 +15,12 @@
         "slack"
     ],
     "scripts": {
-        "build": "app-bundler -LIB && npm run build-dts && npm run typedoc && cd www && npm run build",
+        "build": "npm run build:lib && npm run build-dts && npm run typedoc && cd www && npm run build",
+        "build:lib": "app-bundler -LIB",
+        "build:dts": "tsc --version && tsc -p tsconfig-build.json && atma run tools/build-dts",
         "watch": "app-bundler --watch",
         "example": "node examples/server --TEST --debug --monit.pss foo",
         "release": "echo atma pub -m \"Message\"",
-        "build-dts": "tsc --version && tsc -p tsconfig-build.json && atma run tools/build-dts",
         "test": "atma test",
         "typedoc": "typedoc --tsconfig ./tsconfig-typedoc.json && atma task copy"
     },
@@ -47,6 +48,7 @@
         "@types/node": "^10.17.17",
         "app-bundler": "0.0.88",
         "atma": "^0.12.33",
+        "atma-io-middleware-condcomments": "^1.2.8",
         "atma-io-middleware-yml": "^1.1.25",
         "atma-loader-less": "^1.1.5",
         "atma-loader-ts": "^1.1.12",
@@ -59,6 +61,25 @@
             "lib": {
                 "file": "src/exports.ts",
                 "outputMain": "lib/index.js"
+            },
+            "browser": {
+                "file": "src/exports-browser.ts",
+                "outputMain": "lib/browser.js",
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "everlog",
+                    "moduleWrapper": "umd",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": true
+                        }
+                    }
+                }
             },
             "cli": {
                 "file": "src/cli.ts",
@@ -77,6 +98,7 @@
             },
             "middlewares": {
                 "ts": [
+                    "atma-io-middleware-condcomments:read",
                     "atma-loader-ts:read"
                 ]
             },
@@ -95,6 +117,7 @@
     },
     "atma": {
         "plugins": [
+            "atma-io-middleware-condcomments",
             "atma-loader-ts",
             "atma-loader-less"
         ],
