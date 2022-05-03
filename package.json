@@ -1,9 +1,11 @@
 {
     "name": "everlog",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "CSV Streamed Logger for any case",
     "author": "Alex Kit (alex.kit@atmajs.com)",
-    "main": "lib/index.js",
+    "main": "lib/everlog.js",
+    "types": "./lib/everlog.d.ts",
+    "browser": "lib/everlog-browser.js",
     "bin": {
         "everlog": "index.js"
     },
@@ -15,7 +17,7 @@
         "slack"
     ],
     "scripts": {
-        "build": "npm run build:lib && npm run build-dts && npm run typedoc && cd www && npm run build",
+        "build": "npm run build:lib && npm run build:dts && npm run typedoc && cd www && npm run build",
         "build:lib": "app-bundler -LIB",
         "build:dts": "tsc --version && tsc -p tsconfig-build.json && atma run tools/build-dts",
         "watch": "app-bundler --watch",
@@ -60,11 +62,11 @@
         "apps": {
             "lib": {
                 "file": "src/exports.ts",
-                "outputMain": "lib/index.js"
+                "outputMain": "lib/everlog.js"
             },
             "browser": {
                 "file": "src/exports-browser.ts",
-                "outputMain": "lib/browser.js",
+                "outputMain": "lib/everlog-browser.js",
                 "package": {
                     "module": "commonjs",
                     "moduleName": "everlog",

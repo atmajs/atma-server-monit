@@ -1,5 +1,6 @@
+import { ILoggerOpts } from '../interfaces/ILogger';
 import { Directory } from 'atma-io';
-import { ILoggerOpts, LoggerFile } from '../fs/LoggerFile';
+import { LoggerFile } from '../fs/LoggerFile';
 import { FileReader } from './FileReader';
 import { File } from 'atma-io';
 import * as alot from 'alot';

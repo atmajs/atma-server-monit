@@ -15,7 +15,7 @@ async function process () {
 
     });
 
-    File.copyTo('./ts-temp/typings/index.d.ts', './lib/index.d.ts');
+    File.copyTo('./ts-temp/typings/index.d.ts', './lib/everlog.d.ts');
 }
 
 namespace Preprocess {

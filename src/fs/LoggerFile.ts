@@ -1,4 +1,11 @@
-import { file_readSize, file_appendAsync, file_append, dir_ensure, dir_read, file_remove } from './fs';
+import {
+    file_readSize,
+    file_appendAsync,
+    file_append,
+    dir_ensure,
+    dir_read,
+    file_remove
+} from './fs';
 import { os_EndOfLine } from '../utils/os';
 import * as Path from 'path'
 import * as Formatter from 'atma-formatter'
@@ -6,10 +13,9 @@ import { date_getMidnight } from '../utils/date';
 import { class_Uri } from 'atma-utils';
 import { Directory, File } from 'atma-io';
 import { Csv } from '../utils/csv';
-import { ICsvColumn, ICsvColumnValue, ICsvDictionary } from '../model/ICsvColumn';
+import { ICsvColumnValue, ICsvDictionary } from '../model/ICsvColumn';
 import { LoggerFileHeader } from './LoggerFileHeader';
 import { LoggerFileRow } from './LoggerFileRow';
-import alot from 'alot';
 import { ILogger, ILoggerOpts } from '../interfaces/ILogger';
 
 

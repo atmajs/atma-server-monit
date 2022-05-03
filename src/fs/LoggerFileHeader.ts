@@ -1,5 +1,6 @@
+import { ILoggerOpts } from '../interfaces/ILogger';
 import { ICsvColumn } from '../model/ICsvColumn';
-import { ILoggerOpts } from './LoggerFile';
+
 
 export namespace LoggerFileHeader {
     export const SYMBOL = '‖';

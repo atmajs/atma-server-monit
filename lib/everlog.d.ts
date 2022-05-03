@@ -10,7 +10,8 @@ declare module 'everlog' {
 
 declare module 'everlog/Monit' {
     import { IMonitOptions } from 'everlog/MonitWorker';
-    import { ILoggerOpts, LoggerFile, ILogger } from 'everlog/fs/LoggerFile';
+    import { LoggerFile } from 'everlog/fs/LoggerFile';
+    import { ILogger, ILoggerOpts } from "everlog/interfaces/ILogger";
     type Application = any;
     export namespace Monit {
         function startLogger(opts: IMonitOptions): Promise<void>;
@@ -26,7 +27,8 @@ declare module 'everlog/Monit' {
 
 declare module 'everlog/Everlog' {
     import { MonitWorker, IMonitOptions } from 'everlog/MonitWorker';
-    import { ILoggerOpts, LoggerFile, ILogger } from 'everlog/fs/LoggerFile';
+    import { LoggerFile } from 'everlog/fs/LoggerFile';
+    import { ILogger, ILoggerOpts } from "everlog/interfaces/ILogger";
     export namespace Everlog {
         let monit: MonitWorker;
         function initialize(opts: IMonitOptions): Promise<MonitWorker>;
@@ -40,8 +42,9 @@ declare module 'everlog/Everlog' {
 
 declare module 'everlog/MonitWorker' {
     import { SlackClient } from 'everlog/Slack';
-    import { LoggerFile, ILoggerOpts } from 'everlog/fs/LoggerFile';
+    import { LoggerFile } from 'everlog/fs/LoggerFile';
     import { ChannelReader } from 'everlog/reader/ChannelReader';
+    import { ILoggerOpts } from 'everlog/interfaces/ILogger';
     type LifecycleEvent = any;
     type LifecycleEvents = any;
     export interface IMonitOptions {
@@ -82,26 +85,8 @@ declare module 'everlog/MonitWorker' {
 }
 
 declare module 'everlog/fs/LoggerFile' {
-    import { ICsvColumn, ICsvColumnValue, ICsvDictionary } from 'everlog/model/ICsvColumn';
-    export interface ILoggerOpts {
-        directory: string;
-        fileCountMax?: number;
-        fileBytesMax?: number;
-        fileMessagesMax?: number;
-        messageBufferMax?: number;
-        writeTimeout?: number;
-        fields?: ICsvColumn[];
-        addCsvHeader?: boolean;
-        columns?: ICsvColumn[];
-    }
-    export interface ILogger {
-        writeRow(cells: any[], additional?: (ICsvColumn & {
-            value: any;
-        })[]): any;
-        write(mix: string | any[]): void;
-        flush(): any;
-        removeAll(): Promise<any>;
-    }
+    import { ICsvColumnValue, ICsvDictionary } from 'everlog/model/ICsvColumn';
+    import { ILogger, ILoggerOpts } from 'everlog/interfaces/ILogger';
     export class EmptyLoggerFile implements ILogger {
         name: any;
         opts: any;
@@ -127,6 +112,29 @@ declare module 'everlog/fs/LoggerFile' {
         removeAll(): Promise<any>;
         protected initOptions(opts: ILoggerOpts): void;
         protected init(): void;
+    }
+}
+
+declare module 'everlog/interfaces/ILogger' {
+    import { ICsvColumn } from 'everlog/model/ICsvColumn';
+    export interface ILoggerOpts {
+        directory: string;
+        fileCountMax?: number;
+        fileBytesMax?: number;
+        fileMessagesMax?: number;
+        messageBufferMax?: number;
+        writeTimeout?: number;
+        fields?: ICsvColumn[];
+        addCsvHeader?: boolean;
+        columns?: ICsvColumn[];
+    }
+    export interface ILogger {
+        writeRow(cells: any[], additional?: (ICsvColumn & {
+            value: any;
+        })[]): any;
+        write(mix: string | any[]): void;
+        flush(): any;
+        removeAll(): Promise<any>;
     }
 }
 
